@@ -1,0 +1,40 @@
+.msg {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  padding: 8px 20px;
+  border-radius: 5px;
+  color: #111;
+  width: 100%;
+  max-width: 390px;
+  z-index: 5;
+  left: 10%;
+  bottom: -120%;
+  transition: all 1s;
+}
+
+.msg.active {
+  bottom: 20px;
+  transition: all 0.3s;
+}
+
+.msg span.mio {
+  margin-right: 15px;
+  font-size: 25px;
+}
+
+.successMess {
+  background: #96ffab;
+}
+
+.errorMess {
+  background: #fc869e; 
+}
+
+@media screen and (max-width: 500px) {
+  .msg {
+    width: 95%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

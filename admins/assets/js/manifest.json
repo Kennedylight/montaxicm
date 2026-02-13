@@ -1,0 +1,19 @@
+{
+	"name": "Divin's Dashboard",
+	"short_name": "Divin's",
+	"theme_color": "#db2d7c",
+	"background_color": "#fcfcee",
+	"description": "Gérer les paramètres et reglages de votre site ainsi que des données statistiques d'utilisation.",
+	"icons": [{
+		"src": "../img/fav.png",
+		"type": "image/png",
+		"sizes": "512x512"
+	}],
+	"screenshots": [
+
+	],
+	"orientation" : "portrait-primary",
+	"start_url": "/?source=pwa",
+	"display": "standalone",
+	"scope": "/"
+}

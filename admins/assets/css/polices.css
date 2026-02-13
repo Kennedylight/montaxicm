@@ -1,0 +1,50 @@
+@font-face {
+  font-family: Po1;
+  src: url(../fonts/d001.ttf);
+  font-weight: 400;
+  font-style: normal
+}
+
+@font-face {
+  font-family: Po2;
+  src: url(../fonts/d002.ttf);
+  font-weight: 400;
+  font-style: normal
+}
+
+@font-face {
+  font-family: Po01;
+  src: url(../fonts/d001.ttf);
+  font-weight: 400;
+  font-style: normal
+}
+
+@font-face {
+  font-family: Po02;
+  src: url(../fonts/d002.ttf);
+  font-weight: 400;
+  font-style: normal
+}
+
+@font-face {
+  font-family: MIO;
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/Material-Icons-Outlined.woff2)
+}
+
+.mio {
+  font-family: MIO;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased
+}
