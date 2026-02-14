@@ -48,7 +48,7 @@ $stats_plans = [
     --primary-dark: #033f0b;
     --primary-light: #046812;
     --success-color: #10b981;
-    --warning-color: #f59e0b;
+    --warning-color: #f5cb17;
     --danger-color: #ef4444;
     --info-color: #06b6d4;
     --gray-50: #f9fafb;
@@ -98,8 +98,8 @@ body {
    LAYOUT (Reuse from KYC styles)
    =================================== */
 .dashboard-container {
-    display: flex;
-    width: 100;
+   
+    width: 100%;
     min-height: 100vh;
 }
 
@@ -278,7 +278,7 @@ body {
 }
 
 .tab-btn.active {
-    background: linear-gradient(135deg, var(--pricing-gradient-start), var(--pricing-gradient-end));
+    background: var(--warning-color);
     color: var(--white);
     box-shadow: var(--shadow-md);
 }
@@ -329,7 +329,7 @@ body {
 }
 
 .pricing-table thead {
-    background: linear-gradient(135deg, var(--pricing-gradient-start), var(--pricing-gradient-end));
+    background: var(--warning-color);
     color: var(--white);
 }
 
@@ -485,7 +485,7 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--pricing-gradient-start), var(--pricing-gradient-end));
+    background: var(--warning-color);
     color: var(--white);
     box-shadow: var(--shadow-sm);
 }
@@ -544,7 +544,7 @@ body {
 }
 
 .plan-card {
-    background: var(--white);
+    background: var(--prim);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow);
     overflow: hidden;
@@ -567,7 +567,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.5rem;
-    background: linear-gradient(135deg, var(--pricing-gradient-start), var(--pricing-gradient-end));
+    background: var(--warning-color);
     color: var(--white);
 }
 
@@ -683,7 +683,7 @@ body {
 }
 
 .simulator-header {
-    background: linear-gradient(135deg, var(--pricing-gradient-start), var(--pricing-gradient-end));
+    background: var(--warning-color);
     color: var(--white);
     padding: 2rem;
     text-align: center;
@@ -927,7 +927,7 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 1.5rem 2rem;
-    background: linear-gradient(135deg, var(--pricing-gradient-start), var(--pricing-gradient-end));
+    background: var(--warning-color);
     color: var(--white);
 }
 
@@ -1053,7 +1053,6 @@ body {
     }
     .main{
         width: 100%;
-        background: #000;
     }
     .simulator-body {
         padding: 1rem;
@@ -1283,7 +1282,7 @@ body {
             <!-- TAB 3: SIMULATEUR -->
             <div id="tab-simulator" class="tab-content">
                 <div class="simulator-container">
-                    <div class="simulator-header">
+                    <div class="">
                         <h2>🧮 Simulateur de Tarif</h2>
                         <p>Testez vos tarifs en temps réel</p>
                     </div>
