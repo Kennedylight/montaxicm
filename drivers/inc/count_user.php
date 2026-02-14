@@ -66,7 +66,7 @@ if ($tempUser == false) { // Si non, on fait une requete a l'API seulement quand
         $data = getIP($ip);
 
         $country = $data['countryName'] ?? 'Pays inconnu';
-        $ville = $data['regionName'] . ', ' . $data['cityName'] ?? 'Region et ville inconnues';
+        $ville = $data['regionName'] ?? 'Region ' . ', ' . $data['cityName'] ?? ' et ville inconnues';
         $currency = $data['currencies'][0] ?? 'CAD';
         $countryCode = $data['countryCode'] ?? 'CA';
     }

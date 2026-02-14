@@ -1,6 +1,7 @@
 {
     "require": {
         "minishlink/web-push": "^10.0",
-        "jenssegers/agent": "^2.6"
+        "jenssegers/agent": "^2.6",
+        "pragmarx/google2fa": "^9.0"
     }
 }

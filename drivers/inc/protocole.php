@@ -14,14 +14,14 @@ $parts = explode('.', $hostname);
 $isDashboard = true;
 
 // Vérifier s'il y a un sous-domaine
-if (count($parts) >= 3) { // Il y a un sous domaine !
+if (count($parts) >= 3 || str_contains($host, 'driver')) { // Il y a un sous domaine !
   $subdomain = $parts[0]; // On le capture
 
   $url_site = $url;
   $url .= $host;
   $url_site = implode('.', array_slice($parts, 1)) . $port;
 
-  $img = $url . "/assets/img/";
+  $img = $url . "/assets/images/";
   $css = $url . "/assets/css/";
   $js = $url . "/assets/js/";
   $aud = $url . "/assets/audio/";
@@ -36,13 +36,11 @@ if (count($parts) >= 3) { // Il y a un sous domaine !
   $url_2 = $url . '/drivers/';
   $isDashboard = false;
 
-  $img = $url . "/drivers/assets/img/";
+  $img = $url . "/drivers/assets/images/";
   $css = $url . "/drivers/assets/css/";
   $js = $url . "/drivers/assets/js/";
   $aud = $url . "/drivers/assets/audio/";
   $auth = $_SERVER['DOCUMENT_ROOT'] . "/drivers/auth/";
-  $fr = $url . "/";
-  $en = $url . "/en/";
   $panel = $url . "/panel/";
   $inc = $_SERVER['DOCUMENT_ROOT'] . "/drivers/inc/";
   $mails = $_SERVER['DOCUMENT_ROOT'] . "/drivers/assets/phpmailer/";

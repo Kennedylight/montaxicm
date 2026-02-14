@@ -1,8 +1,6 @@
 <?php
 
-if (isset($branch)) include('./auth/vendor/autoload.php');
-else if (isset($osh)) include($auth . 'vendor/autoload.php');
-else include('drivers/auth/vendor/autoload.php');
+include($_SERVER['DOCUMENT_ROOT'] . "/auth/vendor/autoload.php");
 
 use Jenssegers\Agent\Agent;
 

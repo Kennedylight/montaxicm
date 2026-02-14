@@ -9,6 +9,11 @@ const headers2 = {
 	'Dplus-fetch-api': 'Request_Fetch_Dplus'
 }
 
+function t(fr, en)
+{
+	return $fr;
+}
+
 
 let intE = -1,
 	intS = -1;
@@ -89,7 +94,7 @@ function demarrerHorloge() {
 }
 
 // Lancement au chargement de la page
-demarrerHorloge();
+// demarrerHorloge();
 
 /**
  * Cette fonction permet de retirer l'animation de chargement d'un bouton de soumission d'un formulaire.
@@ -202,6 +207,170 @@ function conf(i = 0, t = null, m = null, s = null) {
 		})
 	}
 
+}
+
+function slideAuth(target) {
+	const slider = document.getElementById('authSlider');
+	const title = document.getElementById('authTitle');
+
+	if (target === 'signup') {
+		slider.style.transform = 'translateX(-50%)';
+		title.innerText = "Inscription";
+	} else {
+		slider.style.transform = 'translateX(0)';
+		title.innerText = "Connexion";
+	}
+}
+
+function toggleForgot(show) {
+	const panel = document.getElementById('forgotSection');
+	panel.classList.toggle('active', show);
+}
+
+// On attend que le DOM soit chargé
+const formLogin = document.getElementById('formLogin');
+const formSignup = document.getElementById('formSignup');
+
+// --- LOGIQUE DE CONNEXION ---
+if (formLogin) {
+	formLogin.addEventListener('submit', (e) => {
+		e.preventDefault();
+
+		const email = formLogin.querySelector('input[name="email"]').value.trim();
+		const pass = formLogin.querySelector('input[name="password"]').value;
+
+		const submitBtn = formSignup.querySelector('button[type=submit]')
+
+		// Validation simple
+		if (!email || !pass) {
+			openError("Veuillez remplir tous les champs de connexion.");
+			return;
+		}
+
+		// Envoi des données
+		submitAuth(`${auth}login.php`, {
+			email: email,
+			password: pass
+		}, "login", submitBtn, formLogin);
+	});
+}
+
+// --- LOGIQUE D'INSCRIPTION ---
+if (formSignup) {
+	formSignup.addEventListener('submit', (e) => {
+		e.preventDefault();
+
+		const nom = document.getElementById('names').value.trim();
+		const email = formSignup.querySelector('input[name="email"]').value.trim();
+		const pass = document.getElementById('password').value;
+
+		const submitBtn = formSignup.querySelector('button[type=submit]')
+
+		// Validations demandées
+		if (nom.length < 3) {
+			openError("Le nom doit contenir au moins 3 caractères.");
+			return;
+		}
+
+		if (email == '') {
+			openError("Veuillez entrer une adresse email valide.");
+			return;
+		}
+
+		if (pass.length < 6) {
+			openError("Le mot de passe doit contenir au moins 6 caractères.");
+			return;
+		}
+
+		// Envoi des données
+		submitAuth(`${auth}register.php`, {
+			nom: nom,
+			email: email,
+			password: pass
+		}, "register", submitBtn, formSignup);
+	});
+}
+
+/**
+ * Fonction générique pour l'envoi AJAX (Fetch)
+ */
+function submitAuth(endpoint, data, type, button, form) {
+	let prevText = setAnimBtnSubForm(button, "Traitement...", form)
+
+	fetch(endpoint, {
+			method: 'POST',
+			headers: headers,
+			body: new URLSearchParams(data)
+		})
+		.then(r => r.json())
+		.then(res => {
+			removeAnimBtnSubForm(button, prevText, form);
+
+			if (res.code == 0) {
+				openSuccess(res.message || "Opération réussie !", 3000);
+
+				// Redirection ou action après succès
+				setTimeout(() => {
+					if (type === "login") location.href = ``;
+					else location.reload();
+				}, 2000);
+
+			} else {
+				openError(res.message || "Une erreur est survenue.", 5000);
+			}
+		})
+		.catch(err => {
+			removeAnimBtnSubForm(button, prevText, form);
+			console.error(err);
+			openError(t("Erreur réseau. Impossible de joindre le serveur.", "Network error. Unable to reach server."));
+		});
+}
+
+/**
+ * Helper: Validation Email
+ */
+
+/**
+ * Logique Mot de passe oublié (Etape 1)
+ */
+function verifyForgot() {
+	const email = document.getElementById('forgotInput').value.trim();
+	const emailDisplay = document.querySelector('.emailAdress');
+
+	if (email == '') {
+		openError(t("Veuillez entrer un email valide pour la récupération.", "Please enter a valid recovery email."));
+		return;
+	}
+
+	if (typeof loadding2 === "function") loadding2(0);
+
+	// Simulation d'envoi de code
+	fetch(`${auth}forgot.php`, {
+			method: 'POST',
+			body: new URLSearchParams({
+				email: email,
+				action: 'sendCode'
+			})
+		})
+		.then(r => r.json())
+		.then(res => {
+			if (typeof loadding2 === "function") loadding2(1);
+
+			if (res.code == 0) {
+				emailDisplay.innerText = email;
+				document.getElementById('forgotStep1').style.display = 'none';
+				document.getElementById('forgotStep2').style.display = 'block';
+				openSuccess(t("Code envoyé avec succès !", "Code sent successfully!"));
+			} else {
+				openError(res.message);
+			}
+		});
+}
+
+function verifyForgot() {
+	// Simulation de vérification
+	document.getElementById('forgotStep1').style.display = 'none';
+	document.getElementById('forgotStep2').style.display = 'block';
 }
 
 /**

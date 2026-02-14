@@ -166,5 +166,4 @@ window.addEventListener("load", function () {
   var router = Router(routes);
   router.init();
 
-  initTiny()
 });

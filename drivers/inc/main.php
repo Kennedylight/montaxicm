@@ -10,6 +10,8 @@ $lang = 'fr';
 include('protocole.php');
 include('functions.php');
 
+$gmaps_key = 'AIzaSyCrbY593deLu2Oic6xjs2BLN1UHmi2rBnQ';
+
 # Données nécessaires dans la récupération des informations
 $dt = date("Y-m-d H:i:s");
 $dd = date("Y-m-d");

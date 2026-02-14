@@ -22,6 +22,8 @@ class ComposerStaticInit1bae9e80265f85709f7235955fd3024a
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
             'Psr\\Clock\\' => 10,
+            'PragmaRX\\Google2FA\\' => 19,
+            'ParagonIE\\ConstantTime\\' => 23,
         ),
         'M' => 
         array (
@@ -63,6 +65,14 @@ class ComposerStaticInit1bae9e80265f85709f7235955fd3024a
         'Psr\\Clock\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
+        ),
+        'PragmaRX\\Google2FA\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/pragmarx/google2fa/src',
+        ),
+        'ParagonIE\\ConstantTime\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
         ),
         'Minishlink\\WebPush\\' => 
         array (

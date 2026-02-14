@@ -18,75 +18,353 @@ body {
   font-family: Po02;
 }
 
+:root {
+  --primary: #f5cb17;
+  --primary-1: #f5cb1711;
+  --primary-1: #f5cb1722;
+  --primary-3: #f5cb1733;
+  --primary-4: #f5cb1744;
+  --primary-5: #f5cb1755;
+  --secondary: #1a5c37;
+  --secondary-1: #1a5c3711;
+  --secondary-2: #1a5c3722;
+  --secondary-3: #1a5c3733;
+  --secondary-4: #1a5c3744;
+  --secondary-5: #1a5c3755;
+  --dark: #212121;
+  --light: #f8f9fa;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+
+.pri {
+  color: var(--primary);
+}
+
+.sec {
+  color: var(--secondary);
+}
+
+body {
+  background: var(--light);
+  overflow: hidden;
+}
+
+/* Conteneur principal */
 main {
   display: flex;
-  padding: 20px 5%;
-  border: solid 1px red;
-  height: 100%;
-  flex: 1;
-}
-
-.phones {
-  border: solid 5px #222;
-  border-radius: 30px;
-  width: 100%;
-  max-width: 380px;
-  height: 100%;
-  display: flex;
   flex-direction: column;
-  min-width: 350px;
-  overflow: auto;
-  resize: horizontal;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
 }
 
-.contents {
-  height: 100%;
-  overflow-y: auto;
-}
-
-.phones .heure {
-  font-weight: bold;
-}
-
-.phones :where(.phoneHead, .phoneFoot) {
-  padding: 5px 15px;
+/* Header Flottant */
+.app-header {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  z-index: 2;
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  background: #0001;
+  align-items: center;
 }
 
-.specialBattery.mio {
-  transform: rotateZ(90deg);
-}
 
-.phoneFoot .homebar {
-  display: inline-block;
-  width: 80px;
-  height: 5px;
-  border-radius: 10px;
-  background: #000;
+.auth-logo {
+  display: block;
+  max-width: 300px;
+  width: 100%;
   margin: 0 auto;
 }
 
-.phoneHead .mio {
-  font-size: 18px;
+.profile-circle {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: var(--shadow);
+  overflow: hidden;
 }
 
-#cartMap {
+.status-toggle {
+  background: var(--secondary);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  box-shadow: var(--shadow);
+}
+
+.icon-button {
+  width: 45px;
+  height: 45px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--shadow);
+  color: var(--dark);
+}
+
+button, input, textarea, select {
+  font-family: Po02;
+  resize: none;
+  outline: none;
+}
+
+/* Carte */
+#maCarte {
+  flex-grow: 1;
   width: 100%;
-  height: 100%;
+  z-index: 1;
 }
 
-.leaflet-bottom.leaflet-right, .leaflet-control-zoom {
+/* Barre de navigation basse */
+.bottom-nav {
+  height: 70px;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-top: 1px solid #eee;
+  z-index: 2;
+}
+
+.nav-item {
+  color: #bdbdbd;
+  font-size: 24px;
+  transition: 0.3s;
+}
+
+.nav-item.active {
+  color: var(--primary);
+}
+
+/* Bouton Ma Position */
+.btn-locate {
+  position: absolute;
+  bottom: 85px;
+  right: 15px;
+  z-index: 3;
+  background: white;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--shadow);
+  color: var(--secondary);
+}
+
+.leaflet-control-attribution.leaflet-control {
   display: none;
 }
 
-header {
+/* Login */
+/* Couleurs définies précédemment */
+.auth-overlay {
   position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  z-index: 4;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  gap: 15px;
-  z-index: 1;
+}
+
+.auth-container {
+  width: 90%;
+  max-width: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.auth-slider {
+  display: flex;
+  width: 200%;
+  /* Deux pages côte à côte */
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-logo {
+  display: block;
+  max-width: 250px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+
+#authTitle {
+  text-align: center;
+  margin: 20px 0;
+}
+
+h2, h1, h3, h4 {
+  font-family: Po01;
+}
+
+.auth-page {
+  width: 50%;
+  padding: 20px;
+}
+
+/* Inputs modernes */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #f1f1f1;
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+}
+
+input, select {
+  background: none;
+  border: none;
+  outline: none;
+  flex-grow: 1;
+  margin-left: 10px;
+  font-size: 16px;
+  font-family: Po02;
+  outline: 0;
+}
+
+/* Boutons */
+.btn-primary {
+  background: var(--primary);
+  color: var(--dark);
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+.btn-secondary {
+  background: var(--secondary);
+  color: white;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+.link-text:hover {
+  text-decoration: underline;
+}
+
+.link-text {
+  cursor: pointer;
+}
+
+.btn-google {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  background: white;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.btn-google img {
+  width: 20px;
+}
+
+/* Mot de passe oublié */
+.forgot-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: white;
+  transform: translateY(100%);
+  transition: 0.3s;
+  z-index: 5;
+}
+
+.forgot-panel.active {
+  transform: translateY(0);
+}
+
+.auth-options {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.separator {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.separator i {
+  display: block;
+  height: 1px;
+  width: 100%;
+  background: #0001;
+}
+
+.separator span {
+  display: inline-block;
+  margin: 0 10px;
+}
+
+.switch-text {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.switch-text strong {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.close-forgot {
+  padding: 8px;
+  border: solid 1px #0002;
+  border-radius: 50%;
+  background: red;
+  color: #fff;
+  margin-bottom: 25px;
+  cursor: pointer;
+}
+
+.info {
+  background: var(--primary-1);
+  padding: 15px 20px;
+  border-radius: 10px;
+  margin: 20px 0;
 }

@@ -10,6 +10,8 @@ return array(
     'Psr\\Http\\Message\\' => array($vendorDir . '/psr/http-factory/src', $vendorDir . '/psr/http-message/src'),
     'Psr\\Http\\Client\\' => array($vendorDir . '/psr/http-client/src'),
     'Psr\\Clock\\' => array($vendorDir . '/psr/clock/src'),
+    'PragmaRX\\Google2FA\\' => array($vendorDir . '/pragmarx/google2fa/src'),
+    'ParagonIE\\ConstantTime\\' => array($vendorDir . '/paragonie/constant_time_encoding/src'),
     'Minishlink\\WebPush\\' => array($vendorDir . '/minishlink/web-push/src'),
     'Jose\\Component\\' => array($vendorDir . '/web-token/jwt-library'),
     'Jenssegers\\Agent\\' => array($vendorDir . '/jenssegers/agent/src'),

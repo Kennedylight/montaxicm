@@ -1,0 +1,82 @@
+.popups, .loads {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  background: #0001;
+  backdrop-filter: blur(5px);
+  z-index: 6;
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  padding: 20px 7%;
+  visibility: hidden;
+  opacity: 0;
+  transition: all .3s ease;
+}
+
+.popups.active, .loads.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popups > div, .loads > div {
+  background: linear-gradient(to bottom right, var(--primary-1), #fff, var(--secondary-1));
+  padding: 30px 20px;
+  border-radius: 10px;
+  box-shadow: 0 1px 50px #0001;
+  max-width: 500px;
+}
+
+.loads.loaddingProcess2 > div {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  max-width: 600px;
+}
+
+.loaddingProcess2 img {
+  width: 60px;
+}
+
+.loaddingProcess > div {
+  text-align: center;
+  width: 100%;
+}
+
+.popups .btns {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.popups .btns > *:hover {
+  transform: translateY(-2px);
+}
+
+.popups .btns > * {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--secondary);
+  color: #fff;
+  font-weight: bold;
+  transition: all .3s ease;
+}
+
+.popups .btns > .prev {
+  background: var(--primary-1);
+  color: var(--primary);
+}
+
+.popups > div h2 {
+  color: var(--secondary);
+}
+
+.popups .messageNotif {
+  margin: 20px 0;
+}
+

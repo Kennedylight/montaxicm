@@ -7,11 +7,14 @@
   transition: all .3s ease;
   scroll-behavior: smooth;
 }
-
+:root {
+  --primary: #f5cb17;
+  --secondary: #047454;
+}
 html,
 body {
   height: 100%;
-  width: 100%;
+  width: 100%;  color: v;
 }
 
 body {

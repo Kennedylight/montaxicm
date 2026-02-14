@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hors Connexion • Mon Taxi CM</title>
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="icon" type="image/png" href="/drivers/assets/images/fav.png">
+    <link rel="stylesheet" href="drivers/assets/css/all.css">
+    <link rel="stylesheet" href="/drivers/assets/css/polices.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="/drivers/assets/css/errorOrSuccessBox.css">
+    <style>
+        :root {
+            --noir: #0a0a0a;
+            --blanc: #ffffff;
+            --bg: #f7f6f2;
+            --or: #f5cb17;
+            --texte: #111;
+            --doux: #777;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Po02, sans-serif;
+            background: var(--bg);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Carte en arrière-plan */
+        #map {
+            flex: 1;
+            background: #e5e3de;
+            z-index: 1;
+        }
+
+        /* Carte du bas (Bottom Sheet style) */
+        .offline-card {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--blanc);
+            border-radius: 24px 24px 0 0;
+            padding: 32px 24px;
+            z-index: 10;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            animation: slideUp .4s cubic-bezier(.25, .8, .25, 1);
+        }
+
+        .icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            font-family: Po01;
+            font-size: 1.4rem;
+            margin: 0 0 8px;
+            color: var(--noir);
+        }
+
+        p {
+            color: var(--doux);
+            font-size: .95rem;
+            margin: 0 0 24px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            padding: 16px;
+            background: var(--noir);
+            color: var(--or);
+            border: none;
+            border-radius: 16px;
+            font-family: Po01;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: .8;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <div class="offline-card">
+        <div class="icon">📡</div>
+        <h1>Vous êtes hors ligne</h1>
+        <p>Impossible de charger Mon Taxi CM.<br>Vérifiez votre connexion internet pour commander.</p>
+        <button class="btn" style="margin-bottom: 10px" onclick="window.location.reload()"><span>↻</span>
+            Réessayer</button>
+        <button class="btn" onclick="document.querySelector('.ussd-simulator').classList.toggle('active');"><span
+                class="mio">phone</span> Essayer le mode USSD</button>
+    </div>
+
+    <div class="ussd-simulator">
+        <div class="dialer-screen">
+            <input type="text" id="ussdInput" readonly value="*237#"><span class="mio"
+                onclick="clearLast()">backspace</span>
+        </div>
+        <div class="keypad">
+            <button onclick="pressKey('1')">1</button><button onclick="pressKey('2')">2</button><button
+                onclick="pressKey('3')">3</button>
+            <button onclick="pressKey('4')">4</button><button onclick="pressKey('5')">5</button><button
+                onclick="pressKey('6')">6</button>
+            <button onclick="pressKey('7')">7</button><button onclick="pressKey('8')">8</button><button
+                onclick="pressKey('9')">9</button>
+            <button onclick="pressKey('*')">*</button><button onclick="pressKey('0')">0</button><button
+                onclick="pressKey('#')">#</button>
+        </div>
+        <button class="btn-call" onclick="startUssd()"><i class="mio">call</i></button>
+    </div>
+
+    <div id="ussdModal" class="ussd-modal">
+        <div class="ussd-content">
+            <p id="ussdResponse">Chargement...</p>
+            <input type="text" id="userChoice" placeholder="Répondre ici...">
+            <div class="ussd-actions">
+                <button onclick="closeUssd()">ANNULER</button>
+                <button onclick="sendUssdChoice()">ENVOYER</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .ussd-simulator {
+            background: #222;
+            padding: 20px;
+            border-radius: 20px;
+            width: 280px;
+            margin: auto;
+            position: fixed;
+            left: 50%;
+            z-index: 30;
+            transform: translateX(-50%);
+            bottom: 10px;
+            scale: 0;
+        }
+
+        .ussd-simulator.active {
+            scale: 1;
+        }
+
+        .ussd-simulator .mio {
+            cursor: pointer;
+        }
+
+        .dialer-screen {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        .dialer-screen input {
+            width: 100%;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 30px;
+            text-align: center;
+        }
+
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .keypad button {
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: #444;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn-call {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: #4CAF50;
+            color: white;
+            display: block;
+            margin: 20px auto 0;
+        }
+
+        /* La Pop-up USSD */
+        .ussd-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000;
+        }
+
+        .ussd-content {
+            background: #f9f9f9;
+            width: 85%;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+
+        #userChoice {
+            width: 100%;
+            border: none;
+            border-bottom: 2px solid var(--primary);
+            outline: none;
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        .ussd-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .ussd-actions button {
+            background: none;
+            border: none;
+            color: #1a5c37;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let intE = -1,
+            intS = -1;
+
+
+        /**
+         * Affiche une notification d'erreur dans l'interface utilisateur.
+         * @param {string} i Le message d'erreur à afficher.
+         * @param {number} j La durée en millisecondes avant de masquer le message.
+         */
+        function openError(i, j = 5000) {
+            let errorMess = document.querySelector(".errorMess");
+            if (i != '') errorMess.querySelector(".mess").innerHTML = i;
+            let successMess = document.querySelector(".successMess");
+            if (intE != -1) {
+                clearTimeout(intE);
+                intE = -1;
+                if (errorMess.classList.contains("active"))
+                    errorMess.classList.remove("active");
+            }
+            if (successMess.classList.contains("active"))
+                successMess.classList.remove("active");
+            if (!errorMess.classList.contains("active"))
+                errorMess.classList.add("active");
+            intE = setTimeout(() => {
+                errorMess.classList.remove("active");
+                errorMess.querySelector(".mess").innerHTML = '';
+            }, j);
+        }
+
+        /**
+         * Affiche une notification de succès dans l'interface utilisateur.
+         * @param {string} i Le message de succès à afficher.
+         * @param {number} j La durée en millisecondes avant de masquer le message.
+         */
+        function openSuccess(i = '', j = 5000) {
+            let successMess = document.querySelector(".successMess");
+            if (i != '') successMess.querySelector(".mess").innerHTML = i;
+            let errorMess = document.querySelector(".errorMess");
+            if (intS != -1) {
+                clearTimeout(intS);
+                intS = -1;
+                if (successMess.classList.contains("active"))
+                    successMess.classList.remove("active");
+            }
+            if (errorMess.classList.contains("active"))
+                errorMess.classList.remove("active");
+            if (!successMess.classList.contains("active"))
+                successMess.classList.add("active");
+            intS = setTimeout(() => {
+                successMess.classList.remove("active");
+                successMess.querySelector(".mess").innerHTML = '';
+            }, j);
+        }
+
+        let currentStep = 'start';
+        let currentService = 'ussd.php'; // Par défaut client
+
+        /**
+         * Ajoute le chiffre ou le caractère (*, #) au champ USSD
+         */
+        function pressKey(key) {
+            const input = document.getElementById('ussdInput');
+
+            // On limite par exemple à 15 caractères pour éviter que ça dépasse du dialer
+            if (input.value.length < 15) {
+                input.value += key;
+            }
+
+            // Petit effet sonore ou retour haptique (optionnel pour le pitch)
+            if (window.navigator.vibrate) {
+                window.navigator.vibrate(20);
+            }
+        }
+
+        /**
+         * Efface le dernier caractère (utile pour l'expérience utilisateur)
+         */
+        function clearLast() {
+            const input = document.getElementById('ussdInput');
+            input.value = input.value.slice(0, -1);
+        }
+
+        function startUssd() {
+            const code = document.getElementById('ussdInput').value;
+            const modal = document.getElementById('ussdModal');
+            const responseField = document.getElementById('ussdResponse');
+
+            // Routage selon le code
+            if (code === "*237#") {
+                currentService = 'ussd.php'; // CLIENT
+            } else if (code === "*123#") {
+                currentService = 'ussd2.php'; // CHAUFFEUR
+            } else if (code === "*237*112#") {
+                // Cas SOS immédiat
+                modal.style.display = 'flex';
+                sendUssdRequest('SOS', 'emergency');
+                return;
+            } else {
+                openError("Code non reconnu. Essaye *237# ou *237*112# (SOS)");
+                return;
+            }
+
+            modal.style.display = 'flex';
+            currentStep = 'start';
+            sendUssdRequest('', 'start');
+        }
+
+        function sendUssdChoice() {
+            const choice = document.getElementById('userChoice').value;
+            sendUssdRequest(choice, currentStep);
+            document.getElementById('userChoice').value = "";
+        }
+
+        function sendUssdRequest(text, step) {
+            fetch('/drivers/auth/' + currentService, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        'text': text,
+                        'step': step
+                    })
+                })
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('ussdResponse').innerHTML = data.message;
+                    currentStep = data.nextStep;
+                    if (data.close) setTimeout(closeUssd, 4000);
+                });
+        }
+
+        /**
+         * Ferme la modale USSD et réinitialise l'état du menu
+         */
+        function closeUssd() {
+            const modal = document.getElementById('ussdModal');
+            const input = document.getElementById('userChoice');
+            const ussdInput = document.getElementById('ussdInput');
+
+            // Masquer la modale
+            modal.style.display = 'none';
+
+            // Réinitialiser les variables de suivi
+            currentStep = 'start';
+
+            // Vider les champs pour la prochaine utilisation
+            if (input) input.value = "";
+            if (ussdInput) ussdInput.value = ""; // Optionnel : vide le dialer après l'appel
+
+            openSuccess("Session USSD terminée.");
+        }
+    </script>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        // Initialisation simple de la carte (centrée sur le Cameroun/Yaoundé par défaut)
+        try {
+            var map = L.map('map', {
+                zoomControl: false,
+                attributionControl: false
+            }).setView([3.8480, 11.5021], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(map);
+
+            // Essayer de localiser l'utilisateur même hors ligne (si GPS actif)
+            map.locate({
+                setView: true,
+                maxZoom: 15
+            });
+            map.on('locationfound', function (e) {
+                L.marker(e.latlng).addTo(map).bindPopup("Dernière position connue").openPopup();
+                L.circle(e.latlng, e.accuracy / 2, {
+                    color: '#f5cb17',
+                    fillColor: '#f5cb17',
+                    fillOpacity: 0.2
+                }).addTo(map);
+            });
+        } catch (e) {
+            // Si Leaflet ne charge pas, on masque la carte
+            document.getElementById('map').style.backgroundColor = '#f0f0f0';
+            document.getElementById('map').innerHTML =
+                '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;font-size:0.9rem;">Carte indisponible</div>';
+        }
+    </script>
+
+
+    <div class="errorMess msg" style="z-index: 40">
+        <span class="mio">cancel</span>
+        <span class="mess">
+        </span>
+    </div>
+    <div class="successMess msg" style="z-index: 40">
+        <span class="mio">check_circle</span>
+        <span class="mess">
+        </span>
+    </div>
+</body>
+
+</html>

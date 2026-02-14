@@ -1,8 +1,8 @@
 <?php
 
-if (isset($branch)) include('./auth/vendor/autoload.php');
-else if (isset($osh)) include($auth . 'vendor/autoload.php');
-else include('drivers/auth/vendor/autoload.php');
+
+if ($isDashboard) include($_SERVER['DOCUMENT_ROOT'] . '/auth/vendor/autoload.php');
+else include($_SERVER['DOCUMENT_ROOT'] . '/drivers/auth/vendor/autoload.php');
 
 use Jenssegers\Agent\Agent;
 
@@ -153,7 +153,9 @@ function ttt($fr, $en)
 	return $lang == 'fr' ? $fr : $en;
 }
 
-
+function ccc($connectedText, $notConnectedText) {
+	return isset($_SESSION['id']) ? $connectedText : $notConnectedText;
+}
 
 /**
  * Créer une notification pour les utilisateurs ayant certaines autorisations
